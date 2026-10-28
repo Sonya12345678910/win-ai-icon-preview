@@ -446,14 +446,14 @@
 
     const tabs = [...document.querySelectorAll(".tab")];
     const rest = (anim) => anim && anim.goToAndStop(0, true);
-    const play = (anim) => anim && anim.play();
+    const play = (anim) => anim && anim.goToAndPlay(0, true);
     tabs.forEach((tab) => {
       const slot = tab.querySelector("[data-lottie]");
       if (!slot || !window.lottie) return;
       const anim = lottie.loadAnimation({
         container: slot,
         renderer: "svg",
-        loop: true,
+        loop: false,
         autoplay: false,
         path: `lottie/${slot.dataset.lottie}.json`,
       });
