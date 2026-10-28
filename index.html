@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en" data-wf-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Video — WIN.AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c0c0d;
+      --fg: #f4f4f5;
+      --muted: #8d8d96;
+      --card: #242428;
+      --footer: #141416;
+      --line: rgba(255, 255, 255, 0.08);
+      --wash: rgba(255, 255, 255, 0.08);
+      --content: min(100% - 3rem, 100%);
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--fg); }
+    body {
+      font-family: Geist, Avenir, Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    button, a { font-family: inherit; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 10.5rem minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 11px 20px;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: blur(12px);
+    }
+    .logo {
+      display: block;
+      height: 23px;
+      width: auto;
+      color: var(--fg);
+    }
+    .logo svg { display: block; height: 23px; width: auto; }
+    .nav { display: flex; align-items: center; gap: 4px; }
+    .nav a {
+      display: inline-flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+    }
+    .nav a:hover, .nav a[aria-current="page"] { color: var(--fg); }
+    .header-tools { display: flex; align-items: center; gap: 8px; }
+    .ghost, .signup {
+      height: 36px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--fg);
+      font-size: 14px;
+      padding: 0 12px;
+    }
+    .theme {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 2px;
+      border-radius: 999px;
+      background: #141416;
+    }
+    .theme span {
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .theme span.on { background: #141416; color: var(--fg); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+    .signup {
+      background: var(--fg);
+      color: var(--bg);
+      font-weight: 500;
+      padding: 0 16px;
+    }
+    .signup:hover { background: #e7e7e8; }
+
+    .page {
+      width: min(100% - 48px, 100%);
+      margin: 0 auto;
+      padding: 0 0 10rem;
+    }
+    h1 {
+      margin: 0;
+      padding-top: 2.25rem;
+      max-width: 18ch;
+      font-size: clamp(3.25rem, 8vw, 3.75rem);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 0.95;
+    }
+    .controls { margin-top: 1.75rem; }
+    .tabs {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      width: max-content;
+      padding: 2px;
+    }
+    .tab {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 48px;
+      margin: 0;
+      padding: 0 16px 0 8px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .tab.is-all { padding: 0 16px; }
+    .tab .ico {
+      width: 36px;
+      height: 36px;
+      margin: 0;
+      display: block;
+      pointer-events: none;
+      flex: 0 0 auto;
+    }
+    .tab .ico svg {
+      width: 36px !important;
+      height: 36px !important;
+      display: block;
+    }
+    .tab:hover { color: var(--fg); background: var(--wash); }
+    .tab[aria-selected="true"] { color: var(--fg); background: var(--wash); }
+
+    .masonry {
+      column-count: 2;
+      column-gap: 16px;
+      margin-top: 1.75rem;
+    }
+    @media (min-width: 700px) { .masonry { column-count: 3; } }
+    @media (min-width: 1100px) { .masonry { column-count: 4; } }
+    @media (min-width: 1400px) { .masonry { column-count: 5; } }
+    .tile {
+      break-inside: avoid;
+      display: block;
+      position: relative;
+      width: 100%;
+      margin: 0 0 16px;
+      padding: 0;
+      border: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--card);
+      color: inherit;
+      container-type: inline-size;
+    }
+    .tile video {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: var(--card);
+      object-fit: cover;
+    }
+    .scrim {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      transition: opacity 0.18s cubic-bezier(0.2, 0, 0, 1);
+      pointer-events: none;
+    }
+    .tile:hover .scrim, .tile:focus-visible .scrim { opacity: 1; }
+    .recreate {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--fg);
+      color: var(--bg);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .title {
+      max-width: 88%;
+      margin: 0;
+      color: #fff;
+      font-size: clamp(0.8rem, 11cqi, 1.7rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      text-align: center;
+      text-wrap: balance;
+    }
+
+    footer {
+      position: relative;
+      padding: 64px 24px 48px;
+      background:
+        radial-gradient(35% 8rem at 50% 0%, rgba(255,255,255,0.08), transparent),
+        var(--footer);
+      border-top: 1px solid var(--line);
+    }
+    footer::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: min(16rem, 33%);
+      height: 1px;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.2);
+      filter: blur(1px);
+    }
+    .footer-layout {
+      width: min(100% - 0px, 100%);
+      max-width: calc(100vw - 48px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 32px;
+    }
+    .copyright { margin: 16px 0 0; color: var(--muted); font-size: 14px; }
+    .footer-main {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 32px;
+      align-items: start;
+    }
+    footer h3 {
+      margin: 0 0 12px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+    footer li a { color: var(--fg); font-size: 14px; }
+    footer li a:hover { color: #fff; }
+    .pwa {
+      width: min(100%, 22.625rem);
+      height: 140px;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      color: #fff;
+      background: linear-gradient(145deg, #e70585 6%, #f72b8b 43%, #ffa29f 96%);
+    }
+    .pwa strong { font-size: 16px; font-weight: 600; }
+    .pwa span { color: rgba(255,255,255,0.88); font-size: 14px; }
+    .install {
+      margin-top: auto;
+      height: 32px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 8px;
+      background: #fff;
+      color: #151515;
+      font-weight: 500;
+    }
+    @media (max-width: 980px) {
+      .header { grid-template-columns: auto 1fr; }
+      .header-tools { display: none; }
+      .footer-layout, .footer-main { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="#top" aria-label="WIN.AI home">
+      <svg viewBox="0 0 1291 362" fill="none" aria-hidden="true">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M70.9067 46.3672C89.9074 55.5384 119.755 75.5806 136.594 87.5952C98.6392 136.971 64.2717 213.343 86.7871 276.932C94.7829 299.513 123.899 287.31 138.833 279.785C120.985 239.294 121.496 198.66 146.151 160.263C171.905 120.155 231.126 115.263 240.076 170.177C246.292 208.313 228.526 248.096 206.264 278.892C231.75 297.501 267.085 297.437 294.599 283.987C313.107 274.939 324.952 264.018 338.231 248.729C309.832 233.944 287.062 210.256 273.41 181.296C254.624 140.562 260.265 91.0735 305.082 70.9452C325.371 62.0756 348.32 61.4749 369.045 69.2703C389.988 77.2458 407.144 94.4665 415.839 114.884C432.695 154.471 426.645 194.298 412.125 232.904C427.867 236.338 438.847 236.518 454.786 234.776L454.798 104.701L523.344 104.643L523.44 211.607C523.44 228.157 523.249 244.728 523.415 261.279C523.5 269.782 524.214 280.233 528.055 287.882C533.792 299.305 545.454 290.258 552.598 285.671C539.398 233.271 545.936 166.457 571.845 118.783C588.46 90.2741 614.493 62.522 650.764 66.79C664.092 68.2346 676.295 74.94 684.655 85.4176C699.395 104.206 697.871 125.399 695.173 147.391C715.857 131.245 754.161 114.629 781.125 116.057C795.001 116.792 816.181 124.146 827 133C861.5 157 867.565 211.529 848.5 252C829.435 292.471 800 329.5 775 352.5L701.625 304.336C765.625 283.536 781.292 241.003 781.125 222.336C779.474 159.518 715.772 183.005 686.517 211.529C650.919 245.954 624.613 286.527 582.872 314.645C550.945 336.152 505.004 347.73 473.1 319.229C458.924 306.565 455.344 286.55 454.781 268.261C434.96 271.207 413.904 271.957 394.105 268.446C344.603 347.835 241.782 387.348 166.009 318.804C130.335 343.086 87.8787 348.236 54.0821 316.989C25.1921 290.281 13.8477 248.381 12.1699 210.248C9.73428 154.877 33.0717 87.0026 70.9067 46.3672ZM179.004 242.49C172.648 224.733 175.357 196.114 191.57 186.22C211.985 188.313 187.889 233.087 181.39 242.342L180.549 243.26L179.513 243.265C179.344 243.007 179.174 242.748 179.004 242.49ZM600.667 236.352C601.378 203.725 615.979 133.79 646.211 116.057C651.733 115.755 654.908 118.971 654.972 124.454C655.408 161.532 627.846 202.443 606.054 230.003L600.667 236.352ZM336.043 169.824C329.701 155.001 320.365 123.866 340.446 115.494C348.352 115.917 354.835 119.991 359.245 126.539C370.252 142.889 371.049 164.722 367.796 183.606C367.16 187.295 363.801 202.936 361.375 204.638L360.21 203.912C350.158 194.186 341.551 182.7 336.043 169.824Z" fill="currentColor"/>
+        <path d="M459.457 21.3054C473.068 11.8921 492.473 18.364 502.805 35.7632C513.136 53.1624 510.488 74.9024 496.883 84.3313C483.269 93.7667 463.853 87.298 453.512 69.89C443.176 52.4791 445.836 30.7245 459.457 21.3054Z" fill="currentColor"/>
+        <path d="M891.814 272.706C908.142 274.243 918.738 291.526 915.482 311.314C912.226 331.101 896.355 345.906 880.021 344.385C863.677 342.863 853.071 325.575 856.325 305.774C859.584 285.975 875.474 271.167 891.814 272.706Z" fill="currentColor"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M1203.96 342.381H1132.67L1119.54 306.416H1028.72L1015.15 342.381H946.43L1042.44 117.281H1111.16L1203.96 342.381ZM1047.13 257.607H1101.72L1074.87 184.072L1047.13 257.607Z" fill="currentColor"/>
+        <path d="M1280.75 342.381H1213.96V117.281H1280.75V342.381Z" fill="currentColor"/>
+      </svg>
+    </a>
+    <nav class="nav" aria-label="Primary navigation">
+      <a href="#top">Explore</a>
+      <a href="#top" aria-current="page">Video</a>
+      <a href="#top">Image</a>
+      <a href="#top">Trends</a>
+      <a href="#top">News</a>
+    </nav>
+    <div class="header-tools">
+      <button class="ghost" type="button">Pricing</button>
+      <button class="ghost" type="button" aria-label="Language, English">English</button>
+      <div class="theme" role="group" aria-label="Theme">
+        <span>Light</span>
+        <span class="on">Dark</span>
+      </div>
+      <button class="signup" type="button">Sign up</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="page">
+      <h1>Make it move.</h1>
+      <section class="controls" aria-label="Video template filters">
+        <div class="tabs" role="tablist">
+          <button class="tab is-all" type="button" role="tab" aria-selected="true">All</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="new"></span>New</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="popular"></span>Popular</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="marketing"></span>Marketing</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="with-you"></span>With you</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="anime"></span>Anime</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="cartoons"></span>Cartoons</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="cinema"></span>Cinema</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="fantasy"></span>Fantasy</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="fashion"></span>Fashion</button>
+        </div>
+      </section>
+      <section class="masonry" id="grid" aria-label="Video templates"></section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-layout">
+      <div>
+        <a class="logo" href="#top" aria-label="WIN.AI home">
+          <svg viewBox="0 0 1291 362" fill="none" aria-hidden="true">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M70.9067 46.3672C89.9074 55.5384 119.755 75.5806 136.594 87.5952C98.6392 136.971 64.2717 213.343 86.7871 276.932C94.7829 299.513 123.899 287.31 138.833 279.785C120.985 239.294 121.496 198.66 146.151 160.263C171.905 120.155 231.126 115.263 240.076 170.177C246.292 208.313 228.526 248.096 206.264 278.892C231.75 297.501 267.085 297.437 294.599 283.987C313.107 274.939 324.952 264.018 338.231 248.729C309.832 233.944 287.062 210.256 273.41 181.296C254.624 140.562 260.265 91.0735 305.082 70.9452C325.371 62.0756 348.32 61.4749 369.045 69.2703C389.988 77.2458 407.144 94.4665 415.839 114.884C432.695 154.471 426.645 194.298 412.125 232.904C427.867 236.338 438.847 236.518 454.786 234.776L454.798 104.701L523.344 104.643L523.44 211.607C523.44 228.157 523.249 244.728 523.415 261.279C523.5 269.782 524.214 280.233 528.055 287.882C533.792 299.305 545.454 290.258 552.598 285.671C539.398 233.271 545.936 166.457 571.845 118.783C588.46 90.2741 614.493 62.522 650.764 66.79C664.092 68.2346 676.295 74.94 684.655 85.4176C699.395 104.206 697.871 125.399 695.173 147.391C715.857 131.245 754.161 114.629 781.125 116.057C795.001 116.792 816.181 124.146 827 133C861.5 157 867.565 211.529 848.5 252C829.435 292.471 800 329.5 775 352.5L701.625 304.336C765.625 283.536 781.292 241.003 781.125 222.336C779.474 159.518 715.772 183.005 686.517 211.529C650.919 245.954 624.613 286.527 582.872 314.645C550.945 336.152 505.004 347.73 473.1 319.229C458.924 306.565 455.344 286.55 454.781 268.261C434.96 271.207 413.904 271.957 394.105 268.446C344.603 347.835 241.782 387.348 166.009 318.804C130.335 343.086 87.8787 348.236 54.0821 316.989C25.1921 290.281 13.8477 248.381 12.1699 210.248C9.73428 154.877 33.0717 87.0026 70.9067 46.3672ZM179.004 242.49C172.648 224.733 175.357 196.114 191.57 186.22C211.985 188.313 187.889 233.087 181.39 242.342L180.549 243.26L179.513 243.265C179.344 243.007 179.174 242.748 179.004 242.49ZM600.667 236.352C601.378 203.725 615.979 133.79 646.211 116.057C651.733 115.755 654.908 118.971 654.972 124.454C655.408 161.532 627.846 202.443 606.054 230.003L600.667 236.352ZM336.043 169.824C329.701 155.001 320.365 123.866 340.446 115.494C348.352 115.917 354.835 119.991 359.245 126.539C370.252 142.889 371.049 164.722 367.796 183.606C367.16 187.295 363.801 202.936 361.375 204.638L360.21 203.912C350.158 194.186 341.551 182.7 336.043 169.824Z" fill="currentColor"/>
+            <path d="M459.457 21.3054C473.068 11.8921 492.473 18.364 502.805 35.7632C513.136 53.1624 510.488 74.9024 496.883 84.3313C483.269 93.7667 463.853 87.298 453.512 69.89C443.176 52.4791 445.836 30.7245 459.457 21.3054Z" fill="currentColor"/>
+            <path d="M891.814 272.706C908.142 274.243 918.738 291.526 915.482 311.314C912.226 331.101 896.355 345.906 880.021 344.385C863.677 342.863 853.071 325.575 856.325 305.774C859.584 285.975 875.474 271.167 891.814 272.706Z" fill="currentColor"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M1203.96 342.381H1132.67L1119.54 306.416H1028.72L1015.15 342.381H946.43L1042.44 117.281H1111.16L1203.96 342.381ZM1047.13 257.607H1101.72L1074.87 184.072L1047.13 257.607Z" fill="currentColor"/>
+            <path d="M1280.75 342.381H1213.96V117.281H1280.75V342.381Z" fill="currentColor"/>
+          </svg>
+        </a>
+        <p class="copyright">© 2026 WIN.AI. All rights reserved.</p>
+      </div>
+      <div class="footer-main">
+        <nav aria-label="PRODUCT">
+          <h3>PRODUCT</h3>
+          <ul>
+            <li><a href="#top">Explore</a></li>
+            <li><a href="#top">Video</a></li>
+            <li><a href="#top">Image</a></li>
+            <li><a href="#top">Trends</a></li>
+            <li><a href="#top">News</a></li>
+            <li><a href="#top">Pricing</a></li>
+            <li><a href="https://t.me/winai_gen_bot">Telegram app</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="LEGAL">
+          <h3>LEGAL</h3>
+          <ul>
+            <li><a href="#top">Terms of Service</a></li>
+            <li><a href="#top">Privacy Policy</a></li>
+            <li><a href="#top">Cookie Policy</a></li>
+            <li><a href="#top">Refund Policy</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="CONTACT">
+          <h3>CONTACT</h3>
+          <ul>
+            <li><a href="mailto:help@win.ai">help@win.ai</a></li>
+            <li><a href="#top">Support</a></li>
+            <li><a href="#top">Partnerships</a></li>
+            <li><a href="#top">Contacts</a></li>
+          </ul>
+        </nav>
+        <div class="pwa">
+          <strong>Win.ai for macOS</strong>
+          <span>Generate with no limits in our app</span>
+          <button class="install" type="button">Install</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="lottie.min.js"></script>
+  <script>
+    const HOST = "https://ai-platform-redesign-v1.vercel.app";
+    const templates = [
+      ["Ceramic Me", 50, "399 / 710"],
+      ["Leaf Spin", 55, "500 / 374"],
+      ["Duplicate Me", 45, "720 / 1280"],
+      ["GTA Style", 50, "400 / 710"],
+      ["Crystallize", 55, "400 / 224"],
+      ["Outfit Check", 45, "720 / 1280"],
+      ["Fish Eye", 50, "400 / 224"],
+      ["Water Portrait", 55, "398 / 224"],
+      ["Pixel Doll", 45, "400 / 710"],
+      ["Rare Artifact", 50, "1080 / 1920"],
+      ["Jell-O This", 55, "1280 / 720"],
+      ["Ad Cut", 45, "400 / 710"],
+      ["Night Drive", 50, "399 / 710"],
+      ["Soft Bloom", 55, "1942 / 1080"],
+      ["Glass Skin", 45, "400 / 224"],
+      ["Twin Shot", 50, "399 / 710"],
+      ["Chrome Walk", 55, "400 / 710"],
+      ["Tiny World", 45, "400 / 224"],
+      ["Slow Spin", 50, "399 / 710"],
+      ["Neon Rain", 55, "400 / 710"],
+      ["Paper Cut", 45, "400 / 710"],
+      ["Dream Loop", 50, "400 / 224"],
+      ["Mirror Step", 55, "400 / 710"],
+      ["Velvet Glow", 45, "398 / 226"]
+    ];
+    const grid = document.getElementById("grid");
+    grid.innerHTML = templates.map(([title, credits, ratio], i) => `
+      <button class="tile" type="button" aria-label="Open ${title}, recreate for ${credits} credits">
+        <video muted loop playsinline preload="metadata" poster="" style="aspect-ratio:${ratio}" src="${HOST}/videos/video-templates-${i + 1}.mp4"></video>
+        <div class="scrim">
+          <span class="recreate">Recreate ${credits}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2m0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2m-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6"/></svg>
+          </span>
+          <span class="title">${title}</span>
+        </div>
+      </button>
+    `).join("");
+
+    const tabs = [...document.querySelectorAll(".tab")];
+    const rest = (anim) => anim && anim.goToAndStop(0, true);
+    const play = (anim) => anim && anim.play();
+    tabs.forEach((tab) => {
+      const slot = tab.querySelector("[data-lottie]");
+      if (!slot || !window.lottie) return;
+      const anim = lottie.loadAnimation({
+        container: slot,
+        renderer: "svg",
+        loop: true,
+        autoplay: false,
+        path: `lottie/${slot.dataset.lottie}.json`,
+      });
+      tab._anim = anim;
+      anim.addEventListener("DOMLoaded", () => rest(anim));
+      tab.addEventListener("pointerenter", (event) => {
+        if (event.pointerType === "mouse") play(anim);
+      });
+      tab.addEventListener("pointerleave", (event) => {
+        if (event.pointerType === "mouse") rest(anim);
+      });
+      tab.addEventListener("pointerdown", () => play(anim));
+    });
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const touch = navigator.maxTouchPoints > 0 && matchMedia("(hover: none)").matches;
+        tabs.forEach((other) => {
+          const on = other === tab;
+          other.setAttribute("aria-selected", on ? "true" : "false");
+          if (!other._anim) return;
+          if (!on) rest(other._anim);
+          else if (touch) play(other._anim);
+          else if (!other.matches(":hover")) rest(other._anim);
+        });
+      });
+    });
+
+    const playVisible = () => {
+      document.querySelectorAll("video").forEach((video) => {
+        const rect = video.getBoundingClientRect();
+        const visible = rect.bottom > 0 && rect.top < window.innerHeight + 200;
+        if (visible) video.play().catch(() => {});
+        else video.pause();
+      });
+    };
+    playVisible();
+    window.addEventListener("scroll", playVisible, { passive: true });
+  </script>
+</body>
+</html>
