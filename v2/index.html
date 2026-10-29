@@ -149,6 +149,11 @@
       pointer-events: none;
       flex: 0 0 auto;
     }
+    .tab .ico svg {
+      width: 36px !important;
+      height: 36px !important;
+      display: block;
+    }
     .tab:hover { color: var(--fg); background: var(--wash); }
     .tab[aria-selected="true"] { color: var(--fg); background: var(--wash); }
 
@@ -329,17 +334,17 @@
       <section class="controls" aria-label="Video template filters">
         <div class="tabs" role="tablist">
           <button class="tab is-all" type="button" role="tab" aria-selected="true">All</button>
-          <button class="tab" type="button" role="tab" aria-selected="false"><img class="ico" src="icons/new.png" alt="">New</button>
-          <button class="tab" type="button" role="tab" aria-selected="false"><img class="ico" src="icons/popular.png" alt="">Popular</button>
-          <button class="tab" type="button" role="tab" aria-selected="false"><img class="ico" src="icons/brand-shots.png" alt="">Brand shots</button>
-          <button class="tab" type="button" role="tab" aria-selected="false"><img class="ico" src="icons/marketing.png" alt="">Marketing</button>
-          <button class="tab" type="button" role="tab" aria-selected="false"><img class="ico" src="icons/with-you.png" alt="">With you</button>
-          <button class="tab" type="button" role="tab" aria-selected="false"><img class="ico" src="icons/mockups.png" alt="">Mockups</button>
-          <button class="tab" type="button" role="tab" aria-selected="false"><img class="ico" src="icons/anime.png" alt="">Anime</button>
-          <button class="tab" type="button" role="tab" aria-selected="false"><img class="ico" src="icons/cartoons.png" alt="">Cartoons</button>
-          <button class="tab" type="button" role="tab" aria-selected="false"><img class="ico" src="icons/cinema.png" alt="">Cinema</button>
-          <button class="tab" type="button" role="tab" aria-selected="false"><img class="ico" src="icons/fantasy.png" alt="">Fantasy</button>
-          <button class="tab" type="button" role="tab" aria-selected="false"><img class="ico" src="icons/fashion.png" alt="">Fashion</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="new"></span>New</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="popular"></span>Popular</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="brand-shots"></span>Brand shots</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="marketing"></span>Marketing</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="with-you"></span>With you</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="mockups"></span>Mockups</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="anime"></span>Anime</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="cartoons"></span>Cartoons</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="cinema"></span>Cinema</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="fantasy"></span>Fantasy</button>
+          <button class="tab" type="button" role="tab" aria-selected="false"><span class="ico" data-lottie="fashion"></span>Fashion</button>
         </div>
       </section>
       <section class="masonry" id="grid" aria-label="Video templates"></section>
@@ -400,6 +405,7 @@
     </div>
   </footer>
 
+  <script src="../lottie.min.js"></script>
   <script>
     const HOST = "https://ai-platform-redesign-v1.vercel.app";
     const templates = [
@@ -442,10 +448,29 @@
     `).join("");
 
     const tabs = [...document.querySelectorAll(".tab")];
+    const rest = (anim) => anim && anim.goToAndStop(0, true);
+    const play = (anim) => anim && anim.goToAndPlay(0, true);
+    tabs.forEach((tab) => {
+      const slot = tab.querySelector("[data-lottie]");
+      if (!slot || !window.lottie) return;
+      const anim = lottie.loadAnimation({
+        container: slot,
+        renderer: "svg",
+        loop: false,
+        autoplay: false,
+        path: `lottie/${slot.dataset.lottie}.json`,
+      });
+      tab._anim = anim;
+      anim.addEventListener("DOMLoaded", () => rest(anim));
+    });
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
         tabs.forEach((other) => {
-          other.setAttribute("aria-selected", other === tab ? "true" : "false");
+          const on = other === tab;
+          other.setAttribute("aria-selected", on ? "true" : "false");
+          if (!other._anim) return;
+          if (on) play(other._anim);
+          else rest(other._anim);
         });
       });
     });
