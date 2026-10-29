@@ -148,7 +148,9 @@
       object-fit: contain;
       pointer-events: none;
       flex: 0 0 auto;
+      visibility: hidden;
     }
+    .tab .ico.is-ready { visibility: visible; }
     .tab .ico svg {
       width: 36px !important;
       height: 36px !important;
@@ -461,7 +463,10 @@
         path: `lottie/${slot.dataset.lottie}.json`,
       });
       tab._anim = anim;
-      anim.addEventListener("DOMLoaded", () => rest(anim));
+      anim.addEventListener("DOMLoaded", () => {
+        rest(anim);
+        slot.classList.add("is-ready");
+      });
     });
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
